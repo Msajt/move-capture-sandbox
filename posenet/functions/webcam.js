@@ -5,7 +5,7 @@ const loadWebcam = (video, poseNet) => {
     poseNet = ml5.poseNet(video,
                           //? 161, 193, 257, 289, 321, 353, 385, 417, 449, 481, 513, and 801
                           { inputResolution: 289 },
-                          () => console.log('The PoseNet model is ready')
+                          modelIsReady 
                          );
     poseNet.on('pose', gotPoses);
 
@@ -22,4 +22,9 @@ const showVideo = (video) => {
 
 const gotPoses = (poses) => {
     if(poses.length > 0) pose = poses[0].pose;
+}
+
+const modelIsReady = () => {
+    console.log('The PoseNet model is ready');
+    recalibrate();
 }
