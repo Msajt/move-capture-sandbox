@@ -1,11 +1,15 @@
 //! Variáveis constantes
-let WIDTH = 480, HEIGHT = 360;
+const WIDTH = 480, HEIGHT = 360;
 //! Inicialização do posenet e da câmera
 let video, poseNet, pose, videoIsOn = false;
 //! Sprites (quadrados, mãos, ...)
-let squaresGroup, rightHand, leftHand;
+let squaresGroup,
+    rightHand, leftHand,
+    rightKneeSprite, leftKneeSprite,
+    hipSprite;
 //! Estado do temporizador de colisão
 let timerState = true;
+let timerStateStep = true;
 //! Calibração da altura do quadril
 let calibrateButton, limitHipY = 0;
 
@@ -20,8 +24,12 @@ function setup(){
     //? Criação dos sprites
     squaresGroup = new Group();
         createSquaresGroup();
-    rightHand = createSprite(150, 150, 50, 50);
-    leftHand = createSprite(150, 150, 50, 50);
+    rightHand       = createSprite(150, 150, 50, 50);
+    leftHand        = createSprite(150, 150, 50, 50);
+    rightKneeSprite = createSprite(150, 150, 30, 30);
+    leftKneeSprite  = createSprite(150, 150, 30, 30);
+    hipSprite       = createSprite(150, 150, 100, 30);
+    leftHipSprite   = createSprite(150, 150, 30, 30);
 
     //? Botão de recalibrar altura do quadril
     calibrateButton = createButton(`Recalibrar quadril`);
@@ -55,13 +63,33 @@ function draw(){
                 if(timerState) squaresGroupCollision(squaresGroup);
 
             let hip = {
-                x: 480 - (leftHip.x+rightHip.x)/2,
+                x: WIDTH - (leftHip.x+rightHip.x)/2,
                 y: (leftHip.y+rightHip.y)/2,
             };
             let neck = {
-                x: 480 - (leftShoulder.x+rightShoulder.x)/2,
+                x: WIDTH - (leftShoulder.x+rightShoulder.x)/2,
                 y: (leftShoulder.y+rightShoulder.y)/2,
             };
+            let knees = {
+                xR: WIDTH - rightKnee.x,
+                yR: Number(rightKnee.y),
+                xL: WIDTH - leftKnee.x,
+                yL: Number(leftKnee.y),
+            };
+
+            rightKneeSprite.position.x = knees.xR;
+            rightKneeSprite.position.y = knees.yR;
+            leftKneeSprite.position.x  = knees.xL;
+            leftKneeSprite.position.y  = knees.yL;
+
+            hipSprite.position.x = hip.x;
+            hipSprite.position.y = hip.y + 30;
+            hipSprite.width = abs(leftHip.x-rightHip.x)*2;
+
+            if(timerStateStep){
+                hipSprite.overlap(rightKneeSprite, () => isWalking(hipSprite));
+                hipSprite.overlap(leftKneeSprite,  () => isWalking(hipSprite));
+            }
 
             //? Angulação do tronco
             chestAngle(neck, hip);

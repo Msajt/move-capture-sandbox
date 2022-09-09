@@ -4,7 +4,7 @@ const loadWebcam = (video, poseNet) => {
 
     poseNet = ml5.poseNet(video,
                           //? 161, 193, 257, 289, 321, 353, 385, 417, 449, 481, 513, and 801
-                          { inputResolution: 289 },
+                          { inputResolution: 321 },
                           modelIsReady 
                          );
     poseNet.on('pose', gotPoses);
