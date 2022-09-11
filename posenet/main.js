@@ -77,19 +77,23 @@ function draw(){
                 yL: Number(leftKnee.y),
             };
 
-            rightKneeSprite.position.x = knees.xR;
-            rightKneeSprite.position.y = knees.yR;
-            leftKneeSprite.position.x  = knees.xL;
-            leftKneeSprite.position.y  = knees.yL;
-
+            // rightKneeSprite.position.x = knees.xR;
+            // rightKneeSprite.position.y = knees.yR;
+            // leftKneeSprite.position.x  = knees.xL;
+            // leftKneeSprite.position.y  = knees.yL;
+            
             hipSprite.position.x = hip.x;
             hipSprite.position.y = hip.y + 30;
             hipSprite.width = abs(leftHip.x-rightHip.x)*2;
-
-            if(timerStateStep){
-                hipSprite.overlap(rightKneeSprite, () => isWalking(hipSprite));
-                hipSprite.overlap(leftKneeSprite,  () => isWalking(hipSprite));
-            }
+            hipSprite.height = ( ( (knees.yL+knees.yR)/2 ) - hip.y) / 4
+                //console.log(hipSprite.height);
+            rightKneeSprite.width = leftKneeSprite.width = hipSprite.height;
+            rightKneeSprite.height = leftKneeSprite.height = hipSprite.height;
+            
+            //? Posição dos joelhos na tela
+            kneesPosition(rightKneeSprite, leftKneeSprite);
+                //? Verificando se o estado do 'timer' está ativo para colisões
+                if(timerStateStep) kneesCollision(hipSprite);
 
             //? Angulação do tronco
             chestAngle(neck, hip);

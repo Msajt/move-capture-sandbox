@@ -28,3 +28,21 @@ const handsPosition = (r, l) => {
 	rightHandPosition(r);
 	leftHandPosition(l);	
 }
+
+//! Funções para posição dos joelhos
+const rightKneePosition = (r) => {
+    let { rightKnee } = pose;
+    r.position.x = WIDTH - rightKnee.x
+    r.position.y = rightKnee.y
+}
+
+const leftKneePosition = (l) => {
+    let { leftKnee } = pose;
+    l.position.x = WIDTH - leftKnee.x
+    l.position.y = leftKnee.y
+}
+
+const kneesPosition = (r, l) => {
+    rightKneePosition(r);
+    leftKneePosition(l);
+}
