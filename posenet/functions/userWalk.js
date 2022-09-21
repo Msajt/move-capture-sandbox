@@ -1,17 +1,21 @@
-const resetKneeCollision = (hip, timer) => {
+const resetKneeCollision = (hip, timer, time) => {
     setTimeout(
-        () => timerStateStep = hip.visible = true
-    , timer);
+        () => timer.step = hip.visible = true
+    , time);
 }
 
-const isWalking = (hip, timer) => {
+const isWalking = (hip, timer, time) => {
         console.log('Passo');
-        timerStateStep = hip.visible = false;
-        resetKneeCollision(hip, timer);
+        
+        //TODO Colocar a função ' gameInstance.SendMessage() '
+            // Coloque aqui a função
+
+        timer.step = hip.visible = false;
+        resetKneeCollision(hip, timer, time);
         
 }
 
-const kneesCollision = (hip) => {
-    hip.overlap(rightKneeSprite, () => isWalking(hip, 1000));
-    hip.overlap(leftKneeSprite , () => isWalking(hip, 1000));
+const kneesCollision = (hip, timer) => {
+    hip.overlap(rightKneeSprite, () => isWalking(hip, timer, 1000));
+    hip.overlap(leftKneeSprite , () => isWalking(hip, timer, 1000));
 }

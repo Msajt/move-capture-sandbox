@@ -8,10 +8,20 @@ let squaresGroup,
     rightKneeSprite, leftKneeSprite,
     hipSprite;
 //! Estado do temporizador de colisão
-let timerState = true;
-let timerStateStep = true;
+    //TODO Trocar por um 'object'
+//let timerState = true;
+//let timerStateStep = true;
+let timer = {
+    step: true,
+    coin: true,
+};
 //! Calibração da altura do quadril
 let calibrateButton, limitHipY = 0;
+
+//! Slider
+let slider = document.getElementById('kneeSlider');
+let sliderValue = document.getElementById('sliderValue');
+let kneeInterval = Number(slider.value);
 
 function preload(){
     video = createCapture(VIDEO);
@@ -29,11 +39,11 @@ function setup(){
     rightKneeSprite = createSprite(150, 150, 30, 30);
     leftKneeSprite  = createSprite(150, 150, 30, 30);
     hipSprite       = createSprite(150, 150, 100, 30);
-    leftHipSprite   = createSprite(150, 150, 30, 30);
+    //leftHipSprite   = createSprite(150, 150, 30, 30);
 
     //? Botão de recalibrar altura do quadril
     calibrateButton = createButton(`Recalibrar quadril`);
-    calibrateButton.position(0, 370);
+    calibrateButton.position(0, 390);
     calibrateButton.mousePressed(recalibrate);
 }
 
@@ -57,11 +67,6 @@ function draw(){
                   nose
                 } = pose;
 
-            //? Posição das mãos na tela
-            handsPosition(rightHand, leftHand);
-                //? Verificando se o estado do 'timer' está ativo para colisões
-                if(timerState) squaresGroupCollision(squaresGroup);
-
             let hip = {
                 x: WIDTH - (leftHip.x+rightHip.x)/2,
                 y: (leftHip.y+rightHip.y)/2,
@@ -77,23 +82,27 @@ function draw(){
                 yL: Number(leftKnee.y),
             };
 
-            // rightKneeSprite.position.x = knees.xR;
-            // rightKneeSprite.position.y = knees.yR;
-            // leftKneeSprite.position.x  = knees.xL;
-            // leftKneeSprite.position.y  = knees.yL;
+            //? Posição das mãos na tela
+            handsPosition(rightHand, leftHand);
+                //? Verificando se o estado do 'timer' está ativo para colisões
+                if(timer.coin) squaresGroupCollision(squaresGroup, timer);
             
             hipSprite.position.x = hip.x;
-            hipSprite.position.y = hip.y + 30;
+            hipSprite.position.y = hip.y + kneeInterval;
+                slider.oninput = function(){
+                    kneeInterval = sliderValue.innerHTML = Number(this.value);
+                }
+
             hipSprite.width = abs(leftHip.x-rightHip.x)*2;
-            hipSprite.height = ( ( (knees.yL+knees.yR)/2 ) - hip.y) / 4
-                //console.log(hipSprite.height);
-            rightKneeSprite.width = leftKneeSprite.width = hipSprite.height;
-            rightKneeSprite.height = leftKneeSprite.height = hipSprite.height;
+            hipSprite.height = abs( ( (knees.yL+knees.yR)/2 ) - hip.y) / 4;
+
+            rightKneeSprite.width = leftKneeSprite.width = rightHand.width = leftHand.width = hipSprite.height;
+            rightKneeSprite.height = leftKneeSprite.height = rightHand.height = leftHand.height = hipSprite.height;
             
             //? Posição dos joelhos na tela
             kneesPosition(rightKneeSprite, leftKneeSprite);
                 //? Verificando se o estado do 'timer' está ativo para colisões
-                if(timerStateStep) kneesCollision(hipSprite);
+                if(timer.step) kneesCollision(hipSprite, timer);
 
             //? Angulação do tronco
             chestAngle(neck, hip);
